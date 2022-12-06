@@ -1,0 +1,327 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Position/presentation bias in search and recommendations</title>
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<link rel="stylesheet" href="dist/theme/serif.css">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<img src="img/jeans.png" height="150px">
+					<h1>Overcoming bias</h1>
+					<h2>in search and recommendations</h2>
+					<br><br>
+					<p><small>metarank.ai | github.com/metarank/metarank | Grebennikov Roman | 2022</small></p>
+				</section>
+    		    <section>
+					<h2>This is me</h2>
+					<img src="img/screaming_sun.png" height="300px">
+					<ul>
+						<li>Long ago: PhD in CS, quant trading, credit scoring</li>
+						<li>Past: Search &amp; personalization for ~7 years</li>
+						<li>Now: <s>Unemployed</s> Full-time open-source contributor</li>
+					</ul>
+				</section>
+				<section>
+					<h1>Metarank</h1>
+					<p>a swiss army knife of re-ranking</p>
+					<img src="img/metarank-mvp.png" height="400px">
+				</section>
+
+				<section>
+					<h2>Ranking around us</h2>
+					<img src="img/use-cases.png">
+				</section>
+				<section>
+					<h2>Sort by # of clicks</h2>
+					<p><img src="img/yolo.jpg" height="300px"></p>
+					<ul>
+						<li>Pros: easy to implement</li>
+						<li>Cons: new items are never on top</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Self-degrading ranking</h2>
+					<p><img src="img/selfdegrade.png"></p>
+					<ul>
+						<li>People are lazy: top items get more clicks</li>
+						<li>Popular items become even more popular</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Behavioral biases</h2>
+					<ul>
+						<li>Position: top items clicked more often</li>
+						<li>Presentation: grid/pagination affects click probability</li>
+						<li>Popularity: snickers vs no-name chocolate</li>
+						<li>Model: train ML model on it's own output</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Position bias</h2>
+					<p><img src="img/bias-monster.jpg" height="300px"></p>
+					<ul>
+						<li>We click on first items because they're on top</li>
+						<li>Click on #1 - is it relevant or just first?</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Experiment: movie search</h2>
+					<table>
+						<tr>
+							<td><img src="img/movie.png" height="350px" style="margin: 0px;"></td>
+							<td><img src="img/gkp.png" height="350px" style="margin: 0px;"></td>
+						</tr>
+					</table>
+					
+					<ul>
+						<li>Crowdsourced dataset with toloka.ai</li>
+						<li>Top-30k movie-related queries from Google</li>
+						<li>top-10k TMDB movies</li>
+						<li>650k labels: 8% relevant</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Shooting yourself in the foot</h2>
+					<table>
+						<tr>
+							<td><img src="img/toloka-rel.png" height="400px" style="margin: 0px;"></td>
+							<td><img src="img/toloka-search.png" height="400px" style="margin: 0px;"></td>
+						</tr>
+					</table>
+					<ul>
+						<li>Toloka has unbiased "search relevance" template</li>
+						<li>Made it <strong>biased</strong> with explicit item ordering</li>
+					</ul>
+				</section>
+				<section>
+					<h2>The trick: shuffled results</h2>
+					<ul>
+						<li>Top-24 results by BM25 score, but randomly ranked</li>
+						<li>relevance should be <strong>independent</strong> from position *</li>
+					</ul>
+					<p><img src="img/click-bias.png" height="350px"></p>
+					<p><small>* - after outlier removal</small></p>
+				</section>
+				<section>
+					<h2>Not only position</h2>
+					<p><img src="img/presentation-bias.png" height="400px"></p>
+					<ul><li>presentation affects clicks</li></ul>
+				</section>
+				<section>
+					<h2>Presentation bias</h2>
+					<table>
+						<tr>
+							<td><img src="img/click-desktop3.png" height="350px" style="margin: 0px;"></td>
+							<td><img src="img/toloka-search.png" height="350px" style="margin: 0px;"></td>
+						</tr>
+					</table>
+					<ul><li>click % drop on a second row</li></ul>
+				</section>
+				<section>
+					<h2>Bias & search function</h2>
+					<ul>
+						<li>Movie search: <strong>navigational function</strong> => low bias</li>
+						<li>Ecommerce: <strong>discovery function</strong> => high bias</li>
+					</ul>
+					<p><img src="img/jeans2.png" height="400px" style="margin: 0px;"></p>
+				</section>
+				<section>
+					<h2>Not so independent</h2>
+					<p>In practice you observe relevance + bias together</p>
+					<table>
+						<tr>
+							<td><img src="img/clicks-bm25.png" height="300px"></td>
+							<td><img src="img/queries.png" height="300px"></td>
+						</tr>
+					</table>
+				</section>
+				<section>
+					<h2>Learning-to-Rank 101</h2>
+					<p><img src="img/dummies.png" height="300px" style="margin: 0px;"></p>
+					<ul>
+						<li>Implicit feedback: clicks on items</li>
+						<li>Item metadata as ranking factors</li>
+						<li>Loss function: pairwise, NDCG</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Not all clicks were made equal</h2>
+					<p><img src="img/ltr-table.png" height="400px"></p>
+				</section>
+				<section>
+					<h2>Clicks as relevance labels?</h2>
+					<p style="margin: 0px;"><img src="img/observed.png" height="350px"  style="margin: 0px;"></p>
+					<ul>
+						<li>if <strong>observed_label = bias * true_label</strong></li>
+						<li>then <strong>true_label = observed_label / bias</strong></li>
+					</ul>
+					<p style="margin: 0px;"><img src="img/sus3.jpg" height="100px" style="margin: 0px;"></p >
+				</section>
+				<section>
+					<h2>IPW: Inverse Propensity Weighting</h2>
+					<p><img src="img/ipw.png" height="350px"></p>
+					<ul><li>How can we estimate the bias?</li></ul>
+				</section>
+				<section>
+					<h2>IPW in 10 seconds</h2>
+					<ul>
+						<li>Shuffle ranking for <strong>small %</strong> of traffic</li>
+						<li>Estimate the bias</li>
+						<li>De-bias the remaining data</li>
+					</ul>
+					<p  style="margin: 0px;"><img src="img/ipw-perf.png" height="350px"></p>
+				</section>
+				<section>
+					<h2>Estimating the bias</h2>
+					<p><img src="img/bias-est.png" height="400px"></p>
+				</section>
+				<section>
+					<h2>IPW: shuffling is dangerous</h2>
+					<p>Problem: shuffling affects business metrics</p>
+					<p><img src="img/ctr-drop.png" height="400px"></p>
+					<small><a href="https://www.youtube.com/watch?v=AYdOpfY8jQU">https://www.youtube.com/watch?v=AYdOpfY8jQU</a></small>
+				</section>
+				<section>
+					<h2>Less costly IPW</h2>
+					<ul>
+						<li><strong>Top-N shuffle</strong>: only top-3 positions are affected</li>
+						<li><strong>Pairwise swaps</strong>: over all traffic</li>
+						<li><strong>Multi-ranker</strong>: exploit ongoing a/b tests</li>
+					</ul>
+				</section>
+				<section>
+					<h2>ML model to predict bias?</h2>
+					<ul>
+						<li>Only biased ranking factors: popularity, cost, position</li>
+						<li>Predicted click probability == bias</li>
+					</ul>
+					<p style="margin: 0px;"><img src="img/em.png" height="300px"></p>
+				</section>
+				<section>
+					<p><img src="img/no-idea.jpg" height="300px"></p>
+					<ul>
+						<li><strong>Weighting</strong>: prefer bottom-position clicks</li>
+						<li><strong>Sampling</strong>: drop some top-position clicks</li>
+					</ul>
+				</section>
+				<section>
+					<h2>A story of IPW</h2>
+					<table>
+						<tr>
+							<td>
+								<p style="margin: 0px;"><img src="img/reverse.png" height="350px"></p>
+							</td>
+							<td style="vertical-align: middle;">
+								<ul>
+									<li>"Too many unpopular items on top"</li>
+									<li>IPW ranking = inverse of non-IPW ranking</li>
+									<li>Training data is popularity biased</li>
+									<li>Low popularity = ML's high reward </li>
+								</ul>
+							</td>
+						</tr>
+					</table>
+					<p>Bias is context dependent, hard to estimate precisely</p>
+				</section>
+				<section>
+					<h2>Bias-aware ML</h2>
+					<p>Can we learn the relevance AND bias influence at once?</p>
+					<p><img src="img/pal.png" height="400px"></p>
+				</section>
+				<section>
+					<h2>Bias-aware ranking</h2>
+					<p style="margin: 0px;"><img src="img/PAL.png" height="400px" style="margin: 0px;"></p>
+					<ul>
+						<li><strong>Training:</strong> Use biased ranking factors as-is</li>
+						<li><strong>Inference:</strong> Replace these with constants</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Practical bias-aware ML</h2>
+					<p><img src="img/demo.png" height="400px"></p>
+					<p>Metarank demo: movie recommendations</p>
+				</section>
+				<section>
+					<h2>Ranklens dataset</h2>
+					<p><img src="img/ranklens.png" height="300px"></p>
+					<ul>
+						<li>Also crowd-sourced with toloka.ai</li>
+						<li>~3k people labelled favourite movies in ~100 categories</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Metarank reranking</h2>
+					<p style="margin: 0px;"><img src="img/deployment.png" height="400px" style="margin: 0px;"></p>
+					<ul>
+						<li>Take a stream of historical/realtime events</li>
+						<li>Re-rank top-N candidates for better NDCG</li>
+					</ul>
+				</section>
+				<section>
+					<img src="img/position.png">
+				</section>
+				<section>
+					<p>demo</p>
+				</section>
+				<section>
+					<h2>Results</h2>
+					<ul>
+						<li>Biased: NDCG=0.6002</li>
+						<li>De-biased: NDCG=0.6060, +1%</li>
+					</ul>
+					<p><img src="img/position-mr.png"></p>
+				</section>
+				<section>
+					<h2>Should you de-bias?</h2>
+					<ul>
+						<li>Navigation vs discovery: it depends</li>
+						<li>There are better algos than PAL</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Extra</h2>
+					<p  style="margin: 0px;"><img src="img/qr.png"  style="margin: 0px;"></p>
+					<ul>
+						<li>Metarank: <a href="https://github.com/metarank/metarank">github.com/metarank/metarank</a></li>
+						<li>MSRD dataset: <a href="https://github.com/metarank/msrd">github.com/metarank/msrd</a></li>
+						<li>Ranklens dataset: <a href="https://github.com/metarank/ranklens">github.com/metarank/ranklens</a></li>
+						<li>PAL paper: <a href="https://dl.acm.org/doi/10.1145/3298689.3347033">dl.acm.org/doi/10.1145/3298689.3347033</a></li>
+					</ul>
+				</section>
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+                history: true,
+                controls: true,
+                progress: true,
+                width: 1200,
+                transition: 'none',
+                slideNumber: true,
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+			});
+		</script>
+	</body>
+</html>
