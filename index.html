@@ -61,7 +61,7 @@
 				<section>
 					<h2>Behavioral biases</h2>
 					<ul>
-						<li>Position: top items clicked more often</li>
+						<li  class="fragment highlight-green">Position: top items clicked more often</li>
 						<li>Presentation: grid/pagination affects click probability</li>
 						<li>Popularity: snickers vs no-name chocolate</li>
 						<li>Model: train ML model on it's own output</li>
@@ -85,10 +85,10 @@
 					</table>
 					
 					<ul>
-						<li>Crowdsourced dataset with toloka.ai</li>
-						<li>Top-30k movie-related queries from Google</li>
-						<li>top-10k TMDB movies</li>
-						<li>650k labels: 8% relevant</li>
+						<li class="fragment">top-10k TMDB movies</li>
+						<li class="fragment">Top-30k movie-related queries from Google</li>
+						<li class="fragment">Crowdsourced with toloka.ai</li>
+						<li class="fragment">650k labels: 8% relevant</li>
 					</ul>
 				</section>
 				<section>
@@ -110,7 +110,7 @@
 						<li>Top-24 results by BM25 score, but randomly ranked</li>
 						<li>relevance should be <strong>independent</strong> from position *</li>
 					</ul>
-					<p><img src="img/click-bias.png" height="350px"></p>
+					<p><img src="img/click-bias.png" height="350px" class="fragment"></p>
 					<p><small>* - after outlier removal</small></p>
 				</section>
 				<section>
@@ -224,15 +224,15 @@
 							</td>
 							<td style="vertical-align: middle;">
 								<ul>
-									<li>"Too many unpopular items on top"</li>
-									<li>IPW ranking = inverse of non-IPW ranking</li>
-									<li>Training data is popularity biased</li>
-									<li>Low popularity = ML's high reward </li>
+									<li class="fragment">"Too many unpopular items on top"</li>
+									<li class="fragment">IPW ranking = inverse of non-IPW ranking</li>
+									<li class="fragment">Training data is popularity biased</li>
+									<li class="fragment">Low popularity = ML's high reward </li>
 								</ul>
 							</td>
 						</tr>
 					</table>
-					<p>Bias is context dependent, hard to estimate precisely</p>
+					<p class="fragment">Bias is context dependent, hard to estimate precisely</p>
 				</section>
 				<section>
 					<h2>Bias-aware ML</h2>
@@ -251,6 +251,7 @@
 					<h2>Practical bias-aware ML</h2>
 					<p><img src="img/demo.png" height="400px"></p>
 					<p>Metarank demo: movie recommendations</p>
+					<a href="https://demo.metarank.ai">demo.metarank.ai</a>
 				</section>
 				<section>
 					<h2>Ranklens dataset</h2>
@@ -261,8 +262,8 @@
 					</ul>
 				</section>
 				<section>
-					<h2>Metarank reranking</h2>
-					<p style="margin: 0px;"><img src="img/deployment.png" height="400px" style="margin: 0px;"></p>
+					<h2>Metarank</h2>
+					<p><img src="img/reranking.png" height="300px"></p>
 					<ul>
 						<li>Take a stream of historical/realtime events</li>
 						<li>Re-rank top-N candidates for better NDCG</li>
@@ -272,7 +273,12 @@
 					<img src="img/position.png">
 				</section>
 				<section>
-					<p>demo</p>
+					<h2>Why PAL?</h2>
+					<ul>
+						<li class="fragment">Shuffling: complicated and costly</li>
+						<li class="fragment">Can learn context</li>
+						<li class="fragment">Can be adapted to popularity/presentation biases</li>
+					</ul>
 				</section>
 				<section>
 					<h2>Results</h2>
@@ -293,7 +299,12 @@
 					<h2>Extra</h2>
 					<p  style="margin: 0px;"><img src="img/qr.png"  style="margin: 0px;"></p>
 					<ul>
-						<li>Metarank: <a href="https://github.com/metarank/metarank">github.com/metarank/metarank</a></li>
+						<li>
+							Metarank: <a href="https://github.com/metarank/metarank">github.com/metarank/metarank</a>
+							<ul>
+							    <li>Slack: <a href="https://metarank.ai/slack">metarank.ai/slack</a></li>
+							</ul>
+						</li>
 						<li>MSRD dataset: <a href="https://github.com/metarank/msrd">github.com/metarank/msrd</a></li>
 						<li>Ranklens dataset: <a href="https://github.com/metarank/ranklens">github.com/metarank/ranklens</a></li>
 						<li>PAL paper: <a href="https://dl.acm.org/doi/10.1145/3298689.3347033">dl.acm.org/doi/10.1145/3298689.3347033</a></li>
